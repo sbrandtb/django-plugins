@@ -30,16 +30,17 @@ def get_plugin_from_string(plugin_name):
     return getattr(module, classname)
 
 
-def include_plugins(point, pattern=r'{plugin}/', urls='urls'):
+def include_plugins(point, pattern=r'^{plugin}/', urls='urls', namespaced=False):
     pluginurls = []
     for plugin in point.get_plugins():
         if hasattr(plugin, urls) and hasattr(plugin, 'name'):
             _urls = getattr(plugin, urls)
             for url in _urls:
                 url.default_args['plugin'] = plugin.name
+            namespace = plugin.name if namespaced else None
             pluginurls.append((
                 pattern.format(plugin=plugin.name),
-                include(_urls)
+                include(_urls, namespace=namespace, app_name=namespace)
             ))
     return include(patterns('', *pluginurls))
 
