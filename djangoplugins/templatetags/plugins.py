@@ -7,11 +7,12 @@ register = Library()
 
 class PluginsNode(Node):
     def __init__(self, point_name, var_name):
-        self.plugins = get_plugin_from_string(point_name).get_plugins()
+        self.point_name = point_name
         self.var_name = var_name
 
     def render(self, context):
-        context[self.var_name] = self.plugins
+        plugins = get_plugin_from_string(self.point_name).get_plugins()
+        context[self.var_name] = plugins
         return ''
 
 
